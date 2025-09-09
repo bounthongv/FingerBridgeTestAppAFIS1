@@ -666,7 +666,7 @@ public FingerprintGuiApp()
         using var conn = new MySqlConnection(connStr);
         conn.Open();
 
-        string sql = "SELECT template FROM fingerprint_templates WHERE person_id = @person_id AND finger_index = @finger_index AND member = @member";
+        string sql = "SELECT `template` FROM `fingerprint_templates` WHERE `person_id` = @person_id AND `finger_index` = @finger_index AND `member` = @member";
         using var cmd = new MySqlCommand(sql, conn);
 
         cmd.Parameters.AddWithValue("@person_id", personId);
@@ -724,7 +724,7 @@ public FingerprintGuiApp()
             using var conn = new MySqlConnection(connStr);
             conn.Open();
 
-            string query = "SELECT image_bmp FROM fingerprint_templates WHERE person_id = @personId AND finger_index = @fingerIndex AND member = @member";
+            string query = "SELECT `image_bmp` FROM `fingerprint_templates` WHERE `person_id` = @personId AND `finger_index` = @fingerIndex AND `member` = @member";
             using var cmd = new MySqlCommand(query, conn);
             cmd.Parameters.AddWithValue("@personId", personId);
             cmd.Parameters.AddWithValue("@fingerIndex", fingerIndex);
@@ -1316,7 +1316,7 @@ public FingerprintGuiApp()
         using var conn = new MySqlConnection(connStr);
         conn.Open();
 
-        string query = "SELECT person_id, finger_index, image_bmp FROM fingerprint_templates WHERE image_bmp IS NOT NULL";
+        string query = "SELECT `person_id`, `finger_index`, `image_bmp` FROM `fingerprint_templates` WHERE `image_bmp` IS NOT NULL";
         using var cmd = new MySqlCommand(query, conn);
         using var reader = cmd.ExecuteReader();
 
@@ -1432,7 +1432,7 @@ public FingerprintGuiApp()
         using (var conn = new MySqlConnection(connStr))
         {
             conn.Open();
-            using (var cmd = new MySqlCommand("SELECT person_id, finger_index, image_bmp FROM fingerprint_templates WHERE image_bmp IS NOT NULL", conn))
+            using (var cmd = new MySqlCommand("SELECT `person_id`, `finger_index`, `image_bmp` FROM `fingerprint_templates` WHERE `image_bmp` IS NOT NULL", conn))
             using (var reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
@@ -1529,7 +1529,7 @@ public FingerprintGuiApp()
         using (var conn = new MySqlConnection(connStr))
         {
             conn.Open();
-            using (var cmd = new MySqlCommand("SELECT person_id, finger_index, image_bmp FROM fingerprint_templates WHERE image_bmp IS NOT NULL", conn))
+            using (var cmd = new MySqlCommand("SELECT `person_id`, `finger_index`, `image_bmp` FROM `fingerprint_templates` WHERE `image_bmp` IS NOT NULL", conn))
             using (var reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
@@ -1742,11 +1742,11 @@ public FingerprintGuiApp()
         using var conn = new MySqlConnection(connectionString);
         conn.Open();
 
-        string sql = @"INSERT INTO fingerprint_templates (person_id, finger_index, image_bmp, template, member)
+        string sql = @"INSERT INTO `fingerprint_templates` (`person_id`, `finger_index`, `image_bmp`, `template`, `member`)
             VALUES (@person_id, @finger_index, @image_bmp, @template, @member)
             ON DUPLICATE KEY UPDATE 
-                image_bmp = VALUES(image_bmp),
-                template = VALUES(template)";
+                `image_bmp` = VALUES(`image_bmp`),
+                `template` = VALUES(`template`)";
 
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@person_id", personId);
