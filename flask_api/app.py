@@ -60,19 +60,19 @@ def get_image():
     """
     person_id = request.args.get('person_id')
     finger_index = request.args.get('finger_index')
-    status = request.args.get('status', 'prisoner')
+    member = request.args.get('member', 'prisoner')
 
     if not person_id or not finger_index:
         return jsonify({"error": "Missing person_id or finger_index"}), 400
 
-    if status not in ['prisoner', 'suspect']:
-        return jsonify({"error": "Status must be 'prisoner' or 'suspect'"}), 400
+    if member not in ['prisoner', 'suspect']:
+        return jsonify({"error": "member must be 'prisoner' or 'suspect'"}), 400
 
     try:
         conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database=DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("SELECT image_bmp FROM fingerprint_templates WHERE person_id = %s AND finger_index = %s AND status = %s",
-                       (person_id, finger_index, status))
+        cursor.execute("SELECT image_bmp FROM fingerprint_templates WHERE person_id = %s AND finger_index = %s AND member = %s",
+                       (person_id, finger_index, member))
         result = cursor.fetchone()
         conn.close()
 
@@ -107,18 +107,18 @@ def capture():
 
     person_id = data.get('person_id')
     finger_index = int(data.get('finger_index', 1))
-    status = data.get('status', 'prisoner')
+    member = data.get('member', 'prisoner')
 
     if not person_id:
         logging.error("Missing person_id in /capture request")
         return jsonify({"status": "error", "message": "Missing person_id"}), 400
 
-    if status not in ['prisoner', 'suspect']:
-        logging.error(f"Invalid status '{status}' in /capture request")
-        return jsonify({"status": "error", "message": "Status must be 'prisoner' or 'suspect'"}), 400
+    if member not in ['prisoner', 'suspect']:
+        logging.error(f"Invalid member '{member}' in /capture request")
+        return jsonify({"status": "error", "message": "Member must be 'prisoner' or 'suspect'"}), 400
 
-    logging.info(f"Calling capture_fingerprint_bmp({person_id}, {finger_index}, {status})")
-    result = capture_fingerprint_bmp(person_id, finger_index, status)
+    logging.info(f"Calling capture_fingerprint_bmp({person_id}, {finger_index}, {member})")
+    result = capture_fingerprint_bmp(person_id, finger_index, member)
     logging.info(f"Bridge response: {result}")
     return jsonify(result)
 
@@ -143,18 +143,18 @@ def verify():
 
     person_id = data.get('person_id')
     finger_index = int(data.get('finger_index', 1))
-    status = data.get('status', 'prisoner')
+    member = data.get('member', 'prisoner')
 
     if not person_id:
         logging.error("Missing person_id in /verify request")
         return jsonify({"status": "error", "message": "Missing person_id"}), 400
 
-    if status not in ['prisoner', 'suspect']:
-        logging.error(f"Invalid status '{status}' in /verify request")
-        return jsonify({"status": "error", "message": "Status must be 'prisoner' or 'suspect'"}), 400
+    if member not in ['prisoner', 'suspect']:
+        logging.error(f"Invalid member '{member}' in /verify request")
+        return jsonify({"status": "error", "message": "Member must be 'prisoner' or 'suspect'"}), 400
 
-    logging.info(f"Calling verify_fingerprint({person_id}, {finger_index}, {status})")
-    result = verify_fingerprint(person_id, finger_index, status)
+    logging.info(f"Calling verify_fingerprint({person_id}, {finger_index}, {member})")
+    result = verify_fingerprint(person_id, finger_index, member)
     logging.info(f"Bridge response: {result}")
     return jsonify(result)
 
