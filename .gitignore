@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+flask_api/venv/
+
+# Build artifacts
+bin/
+obj/
+publish/
+flask_api/build/
+flask_api/dist/
+
+# Logs
+*.log
+
+# IDE and tool-specific
+.vscode/
+.cursor/
+.kombai/
+.qodo/
+
+# Configuration - sensitive
+config.sys
+
+# PyInstaller
+*.spec

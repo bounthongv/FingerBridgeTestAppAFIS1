@@ -1,0 +1,71 @@
+
+
+## 🧾 Installation.txt — Fingerprint API Setup Instructions
+
+### 📁 Step 1: Extract and Locate the Application
+
+1. Extract the contents of the installation `.zip` file to a suitable folder, such as:
+
+   ```
+   C:\FingerprintAPI\
+   ```
+
+2. Ensure the following file is present:
+
+   ```
+   FingerprintAPI.exe
+   ```
+
+---
+
+### ⚙️ Step 2: Enable Auto-Start on Windows Login (Recommended)
+
+#### Option A: Add to Startup Folder (For Current User Only)
+
+1. **Create a shortcut** of `FingerprintAPI.exe`:
+
+   * Right-click `FingerprintAPI.exe` → Select **Create Shortcut**
+
+2. Press `Win + R`, then type:
+
+   ```
+   shell:startup
+   ```
+
+   and press **Enter**
+
+3. **Move the shortcut** into the opened Startup folder.
+
+This ensures the application runs every time the user logs in.
+
+---
+
+#### Option B (Optional): Start Minimized Using a Batch File
+
+1. Create a file named `start_api.bat` with the following content:
+
+   ```bat
+   @echo off
+   start "" /min "C:\FingerprintAPI\FingerprintAPI.exe"
+   ```
+
+2. Replace the path if your installation is in another folder.
+
+3. Place a **shortcut to this `.bat` file** into the Startup folder (`shell:startup`).
+
+This will run the app in minimized mode at startup.
+
+---
+
+### 🧪 Step 3: Verify It Works
+
+* After logging in or restarting, the **Fingerprint API bridge** should be running in the background.
+* To verify, check that the app is active in **Task Manager** or monitor logs if available.
+
+---
+
+### ❓ Troubleshooting
+
+* Ensure your antivirus or Windows Defender does not block the `.exe`.
+* Do **not move** the `.exe` after adding it to Startup unless you update the shortcut too.
+

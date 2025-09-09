@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ApplicationIcon>fingerprint.ico</ApplicationIcon>
+    <AssemblyName>FingerBridge</AssemblyName> <!-- 👈 Add this -->
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Bio.TrustFinger">
+      <HintPath>lib\Bio.TrustFinger.dll</HintPath>
+    </Reference>
+    <None Update="fingerprint.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="lib\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      <Link>%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <TargetPath>%(FileName)%(Extension)</TargetPath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MySqlConnector" Version="2.4.0" />
+    <PackageReference Include="SourceAFIS" Version="3.14.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
+  </ItemGroup>
+</Project>
