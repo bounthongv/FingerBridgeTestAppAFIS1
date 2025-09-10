@@ -16,8 +16,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-
 
 
 
@@ -1519,6 +1517,7 @@ public FingerprintGuiApp()
         double bestScore = 0;
         string? bestPersonId = null;
         int bestFingerIndex = -1;
+        string? bestMember = null;
         var matcher = new FingerprintMatcher(liveTemplate);
 
         // ✅ Load config for DB connection
@@ -1529,7 +1528,7 @@ public FingerprintGuiApp()
         using (var conn = new MySqlConnection(connStr))
         {
             conn.Open();
-            using (var cmd = new MySqlCommand("SELECT `person_id`, `finger_index`, `image_bmp` FROM `fingerprint_templates` WHERE `image_bmp` IS NOT NULL", conn))
+            using (var cmd = new MySqlCommand("SELECT `person_id`, `finger_index`, `image_bmp`, `member` FROM `fingerprint_templates` WHERE `image_bmp` IS NOT NULL", conn))
             using (var reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
@@ -1537,6 +1536,7 @@ public FingerprintGuiApp()
                     string personId = reader.GetString("person_id");
                     int fingerIndex = reader.GetInt32("finger_index");
                     byte[] bmpBytes = (byte[])reader["image_bmp"];
+                    string member = reader.GetString("member");
 
                     try
                     {
@@ -1553,6 +1553,7 @@ public FingerprintGuiApp()
                                 bestScore = score;
                                 bestPersonId = personId;
                                 bestFingerIndex = fingerIndex;
+                                bestMember = member;
                             }
                         }
                     }
@@ -1581,6 +1582,15 @@ public FingerprintGuiApp()
         if (writer != null)
         {
             writer.WriteLine(resultMessage);
+
+            // Add structured data for API parsing
+            if (bestScore > 40 && bestPersonId != null)
+            {
+                writer.WriteLine($"PERSON_ID:{bestPersonId}");
+                writer.WriteLine($"FINGER_INDEX:{bestFingerIndex}");
+                writer.WriteLine($"MEMBER:{bestMember}");
+                writer.WriteLine($"SCORE:{bestScore:F2}");
+            }
 
             try
             {

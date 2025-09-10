@@ -1,5 +1,4 @@
-"""
-Client for communicating with the Fingerprint Bridge Service.
+"""Client for communicating with the Fingerprint Bridge Service.
 """
 
 import socket
@@ -14,7 +13,7 @@ def send_bridge_command(command, timeout=30):
         timeout (int): The socket timeout in seconds.
 
     Returns:
-        dict: A dictionary containing the status, message, and bmp_base64.
+        dict: A dictionary containing the status, message, bmp_base64 and structured fields.
     """
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -37,12 +36,33 @@ def send_bridge_command(command, timeout=30):
 
             result_message = "No valid response from bridge"
             base64_bmp = ""
+            
+            # Enhanced parsing for structured fields
+            person_id = None
+            finger_index = None
+            member = None
+            score = None
 
             for line in lines:
                 clean_line = line.strip().lstrip("\ufeff")
                 print(f"[Bridge] {clean_line}")
+                
                 if clean_line.startswith("BMP:"):
                     base64_bmp = clean_line[4:]
+                elif clean_line.startswith("PERSON_ID:"):
+                    person_id = clean_line[10:].strip()
+                elif clean_line.startswith("FINGER_INDEX:"):
+                    try:
+                        finger_index = int(clean_line[13:].strip())
+                    except ValueError:
+                        pass
+                elif clean_line.startswith("MEMBER:"):
+                    member = clean_line[7:].strip()
+                elif clean_line.startswith("SCORE:"):
+                    try:
+                        score = float(clean_line[6:].strip())
+                    except ValueError:
+                        pass
                 elif "✅" in clean_line or "❌" in clean_line or clean_line.upper().startswith("OK") or "ERROR" in clean_line.upper():
                     result_message = clean_line
 
@@ -57,11 +77,24 @@ def send_bridge_command(command, timeout=30):
                 elif "❌" in result_message:
                     status_str = "no_match"
 
-            return {
+            # Build enhanced response with backward compatibility
+            response = {
                 "status": status_str,
                 "message": result_message,
                 "bmp_base64": base64_bmp
             }
+            
+            # Add structured fields when available (for enhanced match endpoint)
+            if person_id is not None:
+                response["person_id"] = person_id
+            if finger_index is not None:
+                response["finger_index"] = finger_index
+            if member is not None:
+                response["member"] = member
+            if score is not None:
+                response["score"] = score
+                
+            return response
 
     except socket.timeout:
         return {"status": "error", "message": f"Socket timeout after {timeout} seconds"}
