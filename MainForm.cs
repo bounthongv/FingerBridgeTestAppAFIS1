@@ -1748,6 +1748,8 @@ public FingerprintGuiApp()
                 `image_bmp` = VALUES(`image_bmp`),
                 `template` = VALUES(`template`)";
 
+        Console.WriteLine("Executing SQL: " + sql);
+
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@person_id", personId);
         cmd.Parameters.AddWithValue("@finger_index", fingerIndex);
